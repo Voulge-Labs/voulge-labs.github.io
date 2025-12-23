@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voulge Labs</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #ff0055;
+            --bg: #0a0a0a;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The "Cyber Tear" Container */
+        #screen-tear-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .tear {
+            position: absolute;
+            background: rgba(0, 242, 255, 0.2);
+            width: 100%;
+            height: 2px;
+            box-shadow: 0 0 10px var(--primary);
+            opacity: 0;
+        }
+
+        /* Main Content */
+        .content {
+            text-align: center;
+            z-index: 5;
+            position: relative;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        img#logo {
+            width: 180px;
+            filter: drop-shadow(0 0 15px var(--primary));
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            margin-top: 20px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+
+        .status {
+            font-family: 'Courier New', Courier, monospace;
+            color: var(--primary);
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: -10px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Glitch Effect on Text */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::after {
+            content: "VOULGE LABS";
+            position: absolute;
+            left: 2px;
+            text-shadow: -1px 0 red;
+            top: 0;
+            color: white;
+            background: var(--bg);
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0);
+            animation: noise 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes noise {
+            0% { clip: rect(10px, 999px, 40px, 0); }
+            20% { clip: rect(30px, 999px, 60px, 0); }
+            40% { clip: rect(80px, 999px, 100px, 0); }
+            100% { clip: rect(1px, 999px, 5px, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="screen-tear-container"></div>
+
+    <div class="content">
+        <div class="logo-wrapper">
+            <img src="assets/logo.png" id="logo" alt="Voulge Labs Logo">
+        </div>
+        <h1 class="glitch">Voulge Labs</h1>
+        <p class="status">// SYSTEM_OPERATIONAL: OVERRIDE_ACTIVE</p>
+    </div>
+
+    <script>
+        const container = document.getElementById('screen-tear-container');
+
+        function createTear() {
+            const tear = document.createElement('div');
+            tear.className = 'tear';
+            
+            // Randomize position and scale
+            const topPos = Math.random() * 100;
+            const height = Math.random() * 4 + 1;
+            
+            tear.style.top = topPos + '%';
+            tear.style.height = height + 'px';
+            
+            container.appendChild(tear);
+
+            // Animate the "Tear"
+            const duration = Math.random() * 100 + 50;
+            
+            tear.animate([
+                { opacity: 0, transform: 'translateX(-10%) scaleY(1)' },
+                { opacity: 1, transform: 'translateX(0%) scaleY(2)', offset: 0.5 },
+                { opacity: 0, transform: 'translateX(10%) scaleY(1)' }
+            ], {
+                duration: duration,
+                easing: 'linear'
+            });
+
+            // Remove element after animation
+            setTimeout(() => {
+                tear.remove();
+            }, duration);
+        }
+
+        // Trigger tears at random intervals
+        function triggerBatch() {
+            const count = Math.floor(Math.random() * 3) + 1;
+            for(let i = 0; i < count; i++) {
+                setTimeout(createTear, Math.random() * 200);
+            }
+            setTimeout(triggerBatch, Math.random() * 2000 + 500);
+        }
+
+        triggerBatch();
+
+        // Optional: Follow mouse with a subtle glow
+        document.body.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth * 100;
+            const y = e.clientY / window.innerHeight * 100;
+            document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #1a1a1a 0%, #0a0a0a 50%)`;
+        });
+    </script>
+</body>
+</html>
