@@ -8,181 +8,289 @@
         :root {
             --primary: #00f2ff;
             --secondary: #ff0055;
-            --bg: #050505;
+            --bg: #030303;
+            --card-bg: rgba(15, 15, 15, 0.9);
+            --terminal-bg: #000;
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background: var(--bg);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        /* Scanline Texture Overlay */
+        /* CRT & Glitch Overlays */
         body::before {
             content: " ";
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
-            z-index: 20;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            background-size: 100% 3px, 3px 100%;
+            z-index: 100;
             pointer-events: none;
         }
 
         #screen-tear-container {
-            position: absolute;
+            position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 10;
+            z-index: 90;
         }
 
-        /* Enhanced Chromatic Tear */
         .tear {
             position: absolute;
             width: 100%;
-            height: 1px;
             background: white;
-            box-shadow: 
-                0 2px 0 var(--secondary), 
-                0 -2px 0 var(--primary);
+            box-shadow: 0 1px 0 var(--secondary), 0 -1px 0 var(--primary);
             opacity: 0;
         }
 
-        .content {
-            text-align: center;
-            z-index: 5;
-            transition: transform 0.1s;
-        }
-
-        .logo-wrapper {
+        /* Layout */
+        .container {
             position: relative;
-            display: inline-block;
+            z-index: 10;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 100px 20px;
         }
 
-        img#logo {
-            width: 200px;
-            filter: drop-shadow(0 0 20px rgba(0, 242, 255, 0.4));
-            transition: filter 0.1s;
+        .hero {
+            text-align: center;
+            margin-bottom: 120px;
         }
 
-        /* Glitch Class triggered by JS */
-        .glitch-active {
-            filter: hue-rotate(90deg) contrast(150%) !important;
-            transform: translate(calc(Math.random() * 5px), 0);
+        #logo {
+            width: 160px;
+            filter: drop-shadow(0 0 15px var(--primary));
+            margin-bottom: 20px;
         }
 
         h1 {
-            font-size: clamp(2rem, 8vw, 4rem);
-            letter-spacing: 12px;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            letter-spacing: 15px;
             text-transform: uppercase;
-            margin-top: 25px;
-            color: #fff;
-            text-shadow: 2px 2px var(--secondary), -2px -2px var(--primary);
+            margin: 0;
             font-weight: 900;
+            color: #fff;
+            text-shadow: 3px 3px var(--secondary);
+        }
+
+        .section-header {
+            font-family: monospace;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-header::after {
+            content: "";
+            height: 1px;
+            flex-grow: 1;
+            background: linear-gradient(to right, var(--primary), transparent);
+        }
+
+        /* Projects Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 242, 255, 0.15);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
             position: relative;
         }
 
-        .status {
-            font-family: 'Courier New', Courier, monospace;
-            color: var(--primary);
-            font-size: 0.8rem;
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        .card h3 {
+            margin: 10px 0;
+            font-size: 1.5rem;
             letter-spacing: 2px;
-            opacity: 0.7;
             text-transform: uppercase;
         }
 
-        /* Subtle ambient pulse */
-        @keyframes pulse {
-            0% { opacity: 0.8; }
-            50% { opacity: 1; }
-            100% { opacity: 0.8; }
+        .tagline {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+            text-transform: uppercase;
         }
-        .status { animation: pulse 2s infinite; }
 
+        /* Terminal Component */
+        .terminal {
+            background: var(--terminal-bg);
+            border-radius: 4px;
+            margin-top: 20px;
+            padding: 15px;
+            height: 150px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            overflow-y: hidden;
+            border: 1px solid #222;
+            position: relative;
+        }
+
+        .terminal::before {
+            content: "LIVE_EXECUTION_STREAM";
+            position: absolute;
+            top: 2px;
+            right: 10px;
+            font-size: 0.5rem;
+            color: #444;
+        }
+
+        .log-line {
+            margin-bottom: 4px;
+            white-space: nowrap;
+        }
+
+        .log-info { color: #888; }
+        .log-core { color: var(--primary); }
+        .log-warn { color: #ffaa00; }
+        .log-success { color: #00ff88; }
+
+        .module-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            background: #111;
+            border: 1px solid #333;
+            font-size: 0.6rem;
+            margin: 4px 4px 0 0;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
 
     <div id="screen-tear-container"></div>
 
-    <div class="content" id="main-content">
-        <div class="logo-wrapper">
+    <div class="container">
+        <div class="hero">
             <img src="assets/logo.png" id="logo" alt="Voulge Labs">
+            <h1>Voulge Labs</h1>
+            <p style="font-family: monospace; opacity: 0.4; letter-spacing: 3px;">// DECENTRALIZED RECONNAISSANCE //</p>
         </div>
-        <h1>Voulge Labs</h1>
-        <p class="status">// CRITICAL_DATA_STREAM: ENCRYPTED</p>
+
+        <div class="section-header">0x01: ACTIVE_EXPERIMENTS</div>
+        
+        <div class="grid" id="experiment-grid">
+            </div>
     </div>
 
     <script>
-        const container = document.getElementById('screen-tear-container');
-        const content = document.getElementById('main-content');
-        const logo = document.getElementById('logo');
+        // 1. PROJECT DATABASE
+        const experiments = [
+            {
+                id: "creepy-crawly",
+                name: "Creepy Crawly",
+                tagline: "Modular Recon Framework",
+                description: "Scalable async scanning engine designed for high-concurrency web fingerprinting and passive vulnerability detection.",
+                modules: ["Core", "Analyzer", "IO", "Utils"],
+                status: "TESTING",
+                hasTerminal: true
+            },
+            {
+                id: "loading...",
+                name: "Loading next experiment...",
+                tagline: "Coming soon",
+                description: "...",
+                modules: ["..."],
+                status: "ENCRYPTED",
+                hasTerminal: false
+            }
+        ];
 
+        // 2. RENDER CARDS
+        const grid = document.getElementById('experiment-grid');
+        experiments.forEach(exp => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <div class="tagline">${exp.tagline} [${exp.status}]</div>
+                <h3>${exp.name}</h3>
+                <p style="font-size: 0.85rem; opacity: 0.7; min-height: 60px;">${exp.description}</p>
+                <div>
+                    ${exp.modules.map(m => `<span class="module-badge">${m}</span>`).join('')}
+                </div>
+                ${exp.hasTerminal ? `<div class="terminal" id="term-${exp.id}"></div>` : ''}
+            `;
+            grid.appendChild(card);
+        });
+
+        // 3. TERMINAL EMULATION (For Creepy Crawly)
+        const logData = [
+            { type: 'core', msg: 'Core: Initializing async fetcher...' },
+            { type: 'core', msg: 'Core: Resolving DNS for target.com' },
+            { type: 'info', msg: 'IO: Reading target list [domains.jsonl]' },
+            { type: 'core', msg: 'Core: Extracting Meta & Tech stack' },
+            { type: 'warn', msg: 'Analyzer: Missing Security Headers' },
+            { type: 'success', msg: 'IO: Results saved to ./output/results.json' },
+            { type: 'info', msg: 'Core: Thread [3] sleeping...' },
+            { type: 'warn', msg: 'Analyzer: Outdated jQuery detected' }
+        ];
+
+        function runTerminal() {
+            const term = document.getElementById('term-creepy-crawly');
+            if (!term) return;
+
+            let index = 0;
+            setInterval(() => {
+                const line = logData[index % logData.length];
+                const div = document.createElement('div');
+                div.className = 'log-line';
+                div.innerHTML = `<span class="log-${line.type}">> ${line.msg}</span>`;
+                term.appendChild(div);
+                
+                if (term.childNodes.length > 8) term.removeChild(term.firstChild);
+                term.scrollTop = term.scrollHeight;
+                index++;
+            }, 1200);
+        }
+        runTerminal();
+
+        // 4. CYBER TEAR ANIMATION
+        const tearContainer = document.getElementById('screen-tear-container');
         function createTear() {
             const tear = document.createElement('div');
             tear.className = 'tear';
+            const top = Math.random() * 100;
+            const height = Math.random() * 4 + 1;
             
-            const topPos = Math.random() * 100;
-            const height = Math.random() * 3 + 1;
-            
-            tear.style.top = topPos + '%';
+            tear.style.top = top + '%';
             tear.style.height = height + 'px';
-            
-            container.appendChild(tear);
+            tearContainer.appendChild(tear);
 
-            // High-speed jitter animation
-            const duration = Math.random() * 80 + 40;
-            
-            // Randomly "shake" the content when a tear happens
-            if (Math.random() > 0.7) {
-                content.style.transform = `translateX(${Math.random() * 10 - 5}px)`;
-                logo.classList.add('glitch-active');
-                setTimeout(() => {
-                    content.style.transform = 'translateX(0)';
-                    logo.classList.remove('glitch-active');
-                }, duration);
-            }
-
+            const duration = Math.random() * 60 + 40;
             tear.animate([
-                { opacity: 0, transform: 'scaleX(0.5) translateX(-5%)' },
-                { opacity: 0.8, transform: 'scaleX(1.2) translateX(0%)', offset: 0.5 },
-                { opacity: 0, transform: 'scaleX(0.8) translateX(5%)' }
-            ], {
-                duration: duration,
-                easing: 'steps(4)' // Makes it look more digital/robotic
-            });
+                { opacity: 0, transform: 'scaleX(0.4)' },
+                { opacity: 0.8, transform: 'scaleX(1.1)', offset: 0.5 },
+                { opacity: 0, transform: 'scaleX(0.8)' }
+            ], { duration: duration, easing: 'steps(4)' });
 
             setTimeout(() => tear.remove(), duration);
         }
 
-        function triggerBatch() {
-            // Occasionally trigger a "storm" of tears
-            const isStorm = Math.random() > 0.9;
-            const count = isStorm ? 15 : Math.floor(Math.random() * 3) + 1;
-            
-            for(let i = 0; i < count; i++) {
-                setTimeout(createTear, i * (isStorm ? 20 : 50));
-            }
-            
-            setTimeout(triggerBatch, isStorm ? 3000 : Math.random() * 1500 + 200);
-        }
+        setInterval(() => {
+            if (Math.random() > 0.85) createTear();
+        }, 150);
 
-        triggerBatch();
-
-        // Mouse interaction: move the logo slightly based on cursor
-        document.addEventListener('mousemove', (e) => {
-            const moveX = (e.clientX - window.innerWidth / 2) / 50;
-            const moveY = (e.clientY - window.innerHeight / 2) / 50;
-            logo.style.transform = `translate(${moveX}px, ${moveY}px)`;
-        });
     </script>
 </body>
 </html>
