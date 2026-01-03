@@ -275,6 +275,36 @@
         }
         runTerminal();
 
+        // Argus term
+        const argusLogData = [
+            { type: 'monitor', msg: 'Monitor: firing up monitor core loop...' },
+            { type: 'collector', msg: 'Collector: Collecting processes information' },
+            { type: 'info', msg: 'Monitor: Outputting pocesses list' },
+            { type: 'monitor', msg: 'Monitor: Process 651 has been teminated' },
+            { type: 'monitor', msg: 'Monitor: Process 872 has been modified, change detected' },
+            { type: 'warn', msg: 'MLCore: Abnormal behavior detected in process 872' },
+            { type: 'info', msg: 'MLCore: Outputting relevant information...' },
+            { type: 'warn', msg: 'Monitor: Monitoring new processes' }
+        ];
+        function runArgusTerminal() {
+            const term = document.getElementById('term-argus-sentinel');
+            if (!term) return;
+
+            let index = 0;
+            setInterval(() => {
+                const line = logData[index % logData.length];
+                const div = document.createElement('div');
+                div.className = 'log-line';
+                div.innerHTML = `<span class="log-${line.type}">> ${line.msg}</span>`;
+                term.appendChild(div);
+                
+                if (term.childNodes.length > 8) term.removeChild(term.firstChild);
+                term.scrollTop = term.scrollHeight;
+                index++;
+            }, 1200);
+        }
+        runArgusTerminal();
+
         // 4. CYBER TEAR ANIMATION
         const tearContainer = document.getElementById('screen-tear-container');
         function createTear() {
