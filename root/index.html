@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voulge Labs</title>
-    <link rel="icon" type="image/png" href="assets/icon.png">
+    <link rel="icon" type="image/png" href="root/assets/icon.png">
     <style>
         :root {
             --primary: #00f2ff;
@@ -184,7 +184,7 @@
 
     <div class="container">
         <div class="hero">
-            <img src="assets/logo.png" id="logo" alt="Voulge Labs">
+            <img src="root/assets/logo.png" id="logo" alt="Voulge Labs">
             <h1>Voulge Labs</h1>
             <p style="font-family: monospace; opacity: 0.4; letter-spacing: 3px;">// DECENTRALIZED RECONNAISSANCE //</p>
         </div>
@@ -206,6 +206,15 @@
                 modules: ["Core", "Analyzer", "IO", "Utils"],
                 status: "TESTING",
                 hasTerminal: true
+            },
+            {
+              id: "argus-sentinel",
+              name: "ArgusSentinel",
+              tagline: "Process Monitor Written in Go",
+              description: "Monitoring processes in different states, providing a deep insight into unsually active processes, detecting abnormal behaviors.",
+              modules: ["OS", "Monitor", "Collector", "Statistics", "ML"],
+              status: "CRAFTING",
+              hasTerminal: true
             },
             {
                 id: "loading...",
