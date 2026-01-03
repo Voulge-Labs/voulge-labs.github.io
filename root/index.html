@@ -245,65 +245,55 @@
         });
 
         // 3. TERMINAL EMULATION (For Creepy Crawly)
-        const logData = [
-            { type: 'core', msg: 'Core: Initializing async fetcher...' },
-            { type: 'core', msg: 'Core: Resolving DNS for target.com' },
-            { type: 'info', msg: 'IO: Reading target list [domains.jsonl]' },
-            { type: 'core', msg: 'Core: Extracting Meta & Tech stack' },
-            { type: 'warn', msg: 'Analyzer: Missing Security Headers' },
-            { type: 'success', msg: 'IO: Results saved to ./output/results.json' },
-            { type: 'info', msg: 'Core: Thread [3] sleeping...' },
-            { type: 'warn', msg: 'Analyzer: Outdated jQuery detected' }
-        ];
+        const allLogs = {
+            "creepy-crawly": [
+                { type: 'core', msg: 'Core: Initializing async fetcher...' },
+                { type: 'core', msg: 'Core: Resolving DNS for target.com' },
+                { type: 'info', msg: 'IO: Reading target list [domains.jsonl]' },
+                { type: 'core', msg: 'Core: Extracting Meta & Tech stack' },
+                { type: 'warn', msg: 'Analyzer: Missing Security Headers' },
+                { type: 'success', msg: 'IO: Results saved to ./output/results.json' },
+                { type: 'info', msg: 'Core: Thread [3] sleeping...' },
+                { type: 'warn', msg: 'Analyzer: Outdated jQuery detected' }
+            ],
+            "argus-sentinel": [
+                { type: 'core', msg: 'Monitor: firing up monitor core loop...' }, // mapped to log-core color
+                { type: 'info', msg: 'Collector: Collecting process information' },
+                { type: 'info', msg: 'Monitor: Outputting processes list' },
+                { type: 'warn', msg: 'Monitor: Process 651 has been terminated' },
+                { type: 'warn', msg: 'Monitor: Process 872 has been modified' },
+                { type: 'success', msg: 'MLCore: Abnormal behavior detected in PID 872' },
+                { type: 'info', msg: 'MLCore: Outputting relevant telemetry...' },
+                { type: 'core', msg: 'Monitor: Monitoring new processes' }
+            ]
+        };
 
-        function runTerminal() {
-            const term = document.getElementById('term-creepy-crawly');
+        function startTerminalStream(projectId, logs) {
+            const term = document.getElementById(`term-${projectId}`);
             if (!term) return;
 
             let index = 0;
             setInterval(() => {
-                const line = logData[index % logData.length];
+                const line = logs[index % logs.length];
                 const div = document.createElement('div');
                 div.className = 'log-line';
+                
+                // Using your existing CSS classes: log-info, log-core, log-warn, log-success
                 div.innerHTML = `<span class="log-${line.type}">> ${line.msg}</span>`;
                 term.appendChild(div);
                 
                 if (term.childNodes.length > 8) term.removeChild(term.firstChild);
                 term.scrollTop = term.scrollHeight;
                 index++;
-            }, 1200);
+            }, 1200 + (Math.random() * 500)); // Added slight variance so they aren't perfectly synced
         }
-        runTerminal();
 
-        // Argus term
-        const argusLogData = [
-            { type: 'monitor', msg: 'Monitor: firing up monitor core loop...' },
-            { type: 'collector', msg: 'Collector: Collecting processes information' },
-            { type: 'info', msg: 'Monitor: Outputting pocesses list' },
-            { type: 'monitor', msg: 'Monitor: Process 651 has been teminated' },
-            { type: 'monitor', msg: 'Monitor: Process 872 has been modified, change detected' },
-            { type: 'warn', msg: 'MLCore: Abnormal behavior detected in process 872' },
-            { type: 'info', msg: 'MLCore: Outputting relevant information...' },
-            { type: 'warn', msg: 'Monitor: Monitoring new processes' }
-        ];
-        function runArgusTerminal() {
-            const term = document.getElementById('term-argus-sentinel');
-            if (!term) return;
-
-            let index = 0;
-            setInterval(() => {
-                const line = logData[index % logData.length];
-                const div = document.createElement('div');
-                div.className = 'log-line';
-                div.innerHTML = `<span class="log-${line.type}">> ${line.msg}</span>`;
-                term.appendChild(div);
-                
-                if (term.childNodes.length > 8) term.removeChild(term.firstChild);
-                term.scrollTop = term.scrollHeight;
-                index++;
-            }, 1200);
-        }
-        runArgusTerminal();
+        // Auto-start terminals for any project that has 'hasTerminal: true'
+        experiments.forEach(exp => {
+            if (exp.hasTerminal && allLogs[exp.id]) {
+                startTerminalStream(exp.id, allLogs[exp.id]);
+            }
+        });
 
         // 4. CYBER TEAR ANIMATION
         const tearContainer = document.getElementById('screen-tear-container');
